@@ -30,8 +30,9 @@ class DaoRequest extends Dao{
         $created=false;
         if(!$this->exist($request->getId())){    
             $stmt = $this->handler->prepare("INSERT INTO requests 
-                (`controller`,`function`,`parameters`) VALUES 
-                (:controller,:function,:parameters)");
+                (`uri`,`controller`,`function`,`parameters`) VALUES 
+                (:uri,:controller,:function,:parameters)");
+            $stmt->bindParam(':uri',$request->getUri());
             $stmt->bindParam(':controller',$request->getController());
             $stmt->bindParam(':function',$request->getFunction());
             $stmt->bindParam(':parameters',$request->getParameters());
@@ -59,6 +60,7 @@ class DaoRequest extends Dao{
             if ($stmt->execute(array($id))) {
                 $row=$stmt->fetch();
                 $request=new Request();
+                $request->setUri($row["uri"]);
                 $request->setController($row["controller"]);
                 $request->setFunction($row["function"]);
                 $request->setParameters($row["parameters"]);
@@ -80,10 +82,12 @@ class DaoRequest extends Dao{
         $updated=false;
         if($this->exist($request->getId())){
             $stmt = $this->handler->prepare("UPDATE requests SET 
+                `uri`=:uri,
                 `controller`=:controller,
                 `function`=:function,
                 `parameters`=:parameters,
                 WHERE id=:id");
+            $stmt->bindParam(':uri',$request->getUri());
             $stmt->bindParam(':controller',$request->getController());
             $stmt->bindParam(':function',$request->getFunction());
             $stmt->bindParam(':parameters',$request->getParameters());

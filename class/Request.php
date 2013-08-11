@@ -11,6 +11,12 @@
  */
 class Request extends Object{
     /** 
+     * URI del request 
+     * 
+     * @var string
+     */
+    protected $uri;
+    /** 
      * Controlador del request 
      * 
      * @var string
@@ -30,16 +36,26 @@ class Request extends Object{
     protected $parameters;
     /**
     * Constructor
+    * @param string URI del request        
     * @param string Controlador del request        
     * @param string Función del request        
     * @param array Parámetros pasados al request        
     */
-    function __construct($controller="",$function="",$parameters=array()){        
+    function __construct($uri="",$controller="",$function="",$parameters=array()){        
+        $this->uri=$uri;
         $this->controller=$controller;
         $this->function=$function;
         $this->parameters=$parameters;
     }
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>   SETTERS   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    /**
+    * Setter uri
+    * @param string $value URI del request
+    * @return void
+    */
+    public function setUri($value) {
+        $this->uri=$value;
+    }        
     /**
     * Setter controller
     * @param string $value Controlador del request
@@ -65,6 +81,13 @@ class Request extends Object{
         $this->parameters=$value;
     }        
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>   SETTERS   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    /**
+    * Getter: uri
+    * @return string
+    */
+    public function getUri() {
+        return $this->uri;
+    }        
     /**
     * Getter: controller
     * @return string
