@@ -23,7 +23,7 @@
 /***************************** GENERADOR DE CLASE *****************************/
 /******************************************************************************/
 function classGenerator($package,$subpackage,$class,$attributes){
-$file = 'classes/'.$class.'.php';
+$file = 'class/'.$class.'.php';
 $header='<?php
 /** '.$class.' File
  * @'.$package.' models @'.$subpackage.' social */
@@ -110,7 +110,7 @@ $class.=$getters;
 $class.='    
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>   METHODS   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 }
-?>';
+';
 //Escribe la clase
 file_put_contents($file,$header.$class);
 print_r("CLASE GENERADA <br>");
@@ -122,7 +122,7 @@ print_r("CLASE GENERADA <br>");
 /**************************** GENERADOR DE MODELO *****************************/
 /******************************************************************************/
 function daoGenerator($package,$subpackage,$class,$attributes){
-$file = 'classes/Dao'.$class.'.php';
+$file = 'dao/Dao'.$class.'.php';
 $header='<?php
 /** Dao'.$class.' File
  * @package models @subpackage dal */
@@ -340,7 +340,7 @@ $class.=$exist;
 $class.=$listing;
 $class.='
 }
-?>';
+';
 //Escribe la clase
 file_put_contents($file,$header.$class);
 print_r("CLASE DE MODELO GENERADA <br>");
@@ -351,7 +351,7 @@ print_r("CLASE DE MODELO GENERADA <br>");
 /********************* ALMACENA LA ESTRUCTURA GENERADORA **********************/
 /******************************************************************************/
 function saveGenerator($package,$subpackage,$class,$attributes){
-$file = 'classes/struct'.$class.'.php';
+$file = 'struct/struct'.$class.'.php';
     //Crea el texto de los atributos
     foreach ($attributes as $attribute){
         $textAtributes.='array("name"=>"'.$attribute['name'].'", "type"=>"'.$attribute['type'].'",   "comment"=>"'.$attribute['comment'].'"),
