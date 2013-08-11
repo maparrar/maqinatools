@@ -5,8 +5,6 @@
         <title></title>
     </head>
     <body>
-        <?php
-        // put your code here
-        ?>
+        <a href="generator.php">Generar clases</a>
     </body>
 </html>

@@ -1,7 +1,3 @@
-
-
-
-
 <?php
     $package="models";
     $subpackage="social";
@@ -25,6 +21,8 @@
     classGenerator($package,$subpackage,$class,$attributes);
     //Genera el DAO para la clase
     daoGenerator($package,$subpackage,$class,$attributes);
+    //Imprime el enlace para volver
+    echo '<a href="index.php">Volver</a>';
     
     
 /******************************************************************************/
@@ -35,12 +33,10 @@ $file = 'classes/'.$class.'.php';
 $header='<?php
 /** '.$class.' File
  * @'.$package.' models @'.$subpackage.' social */
-include_once Router::rel(\'models\').\'core/Object.php\';
 /**
  * '.$class.' Class
- * 
- * @author bonfolio.co
- * @author Alejandro Parra <alejandro.parra@bonfolio.co> - @author Juan Cárdenas <juan.cardenas@bonfolio.co>
+ *
+ * @author https://github.com/maparrar/maqinato
  * @package '.$package.'
  * @subpackage '.$subpackage.'
  */';
@@ -131,16 +127,12 @@ $file = 'classes/Dao'.$class.'.php';
 $header='<?php
 /** Dao'.$class.' File
  * @package models @subpackage dal */
-if(!class_exists(\'Router\')) require_once \'../../config/Router.php\';
-include_once Router::rel(\'models\').\'dal/Dao.php\';
-include_once Router::rel(\'models\').\''.$subpackage.'/'.$class.'.php\';
 /**
  * Dao'.$class.' Class
  *
  * Class data layer for the '.$class.' class
  * 
- * @author bonfolio.co
- * @author Alejandro Parra <alejandro.parra@bonfolio.co> - @author Juan Cárdenas <juan.cardenas@bonfolio.co>
+ * @author https://github.com/maparrar/maqinato
  * @package models
  * @subpackage dal
  */';
@@ -353,6 +345,3 @@ $class.='
 file_put_contents($file,$header.$class);
 print_r("CLASE DE MODELO GENERADA <br>");
 }
-
-
-?>
