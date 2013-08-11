@@ -5,45 +5,64 @@
  * Test Class
  *
  * @author https://github.com/maparrar/maqinato
+ * @author Alejandro Parra <maparrar@gmail.com>
  * @package models
  * @subpackage social
  */
 class Test extends Object{
-    /** Suggestion id 
+    /** 
+     * Suggestion id 
+     * 
      * @var int
      */
     protected $id;
-    /** Suggestion content 
+    /** 
+     * Suggestion content 
+     * 
      * @var string
      */
     protected $content;
-    /** Página en la que debe aparecer [home|profile|folio|...] 
+    /** 
+     * Página en la que debe aparecer [home|profile|folio|...] 
+     * 
      * @var string
      */
     protected $page;
-    /** Elemento de la página al que estará referenciado [.divClase|#divConId|...] 
+    /** 
+     * Elemento de la página al que estará referenciado [.divClase|#divConId|...] 
+     * 
      * @var string
      */
     protected $element;
-    /** Posición respecto al elemento [north|south|east|west] 
+    /** 
+     * Posición respecto al elemento [north|south|east|west] 
+     * 
      * @var string
      */
     protected $position;
-    /** Posición de la flecha en el lado especificado, si es north, la $arrowPosition=0
+    /** 
+     * Posición de la flecha en el lado especificado, si es north, la $arrowPosition=0
         *    indica que está a cero pixeles de la parte izquierda de abajo, si $arrowPosition=100
         *    indica que está a 100 pixeles de la parte izquierda de abajo 
+     * 
      * @var int
      */
     protected $arrowPosition;
-    /** Alto de la sugerencia en pixeles, si es 0 se calculará automáticamente 
+    /** 
+     * Alto de la sugerencia en pixeles, si es 0 se calculará automáticamente 
+     * 
      * @var int
      */
     protected $height;
-    /** Ancho de la sugerencia en pixeles, si es 0 se calculará automáticamente 
+    /** 
+     * Ancho de la sugerencia en pixeles, si es 0 se calculará automáticamente 
+     * 
      * @var int
      */
     protected $width;
-    /** Si tiene alguna imagen, almacena la ruta respecto a la carpteta data 
+    /** 
+     * Si tiene alguna imagen, almacena la ruta respecto a la carpteta data 
+     * 
      * @var string
      */
     protected $image;

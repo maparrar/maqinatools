@@ -7,6 +7,7 @@
  * Class data layer for the Test class
  * 
  * @author https://github.com/maparrar/maqinato
+ * @author Alejandro Parra <maparrar@gmail.com>
  * @package models
  * @subpackage dal
  */

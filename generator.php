@@ -1,19 +1,11 @@
 <?php
-    $package="models";
-    $subpackage="social";
-    $class="Test";
+    $package="core";
+    $subpackage="routing";
+    $class="Request";
     $attributes=array(
-        array("name"=>"id",         "type"=>"int",      "comment"=>"Suggestion id"),
-        array("name"=>"content",    "type"=>"string",   "comment"=>"Suggestion content"),
-        array("name"=>"page",       "type"=>"string",   "comment"=>"Página en la que debe aparecer [home|profile|folio|...]"),
-        array("name"=>"element",    "type"=>"string",   "comment"=>"Elemento de la página al que estará referenciado [.divClase|#divConId|...]"),
-        array("name"=>"position",   "type"=>"string",   "comment"=>"Posición respecto al elemento [north|south|east|west]"),
-        array("name"=>"arrowPosition","type"=>"int",    "comment"=>"Posición de la flecha en el lado especificado, si es north, la \$arrowPosition=0
-        *    indica que está a cero pixeles de la parte izquierda de abajo, si \$arrowPosition=100
-        *    indica que está a 100 pixeles de la parte izquierda de abajo"),
-        array("name"=>"height",     "type"=>"int",      "comment"=>"Alto de la sugerencia en pixeles, si es 0 se calculará automáticamente"),
-        array("name"=>"width",      "type"=>"int",      "comment"=>"Ancho de la sugerencia en pixeles, si es 0 se calculará automáticamente"),
-        array("name"=>"image",      "type"=>"string",   "comment"=>"Si tiene alguna imagen, almacena la ruta respecto a la carpteta data")
+        array("name"=>"controller", "type"=>"string",   "comment"=>"Controlador del request"),
+        array("name"=>"function",   "type"=>"string",   "comment"=>"Función del request"),
+        array("name"=>"parameters", "type"=>"array",    "comment"=>"Parámetros pasados al request")
     );
     
     
@@ -21,6 +13,8 @@
     classGenerator($package,$subpackage,$class,$attributes);
     //Genera el DAO para la clase
     daoGenerator($package,$subpackage,$class,$attributes);
+    //Guarda el generador de la clase
+    saveGenerator($package,$subpackage,$class,$attributes);
     //Imprime el enlace para volver
     echo '<a href="index.php">Volver</a>';
     
@@ -37,13 +31,16 @@ $header='<?php
  * '.$class.' Class
  *
  * @author https://github.com/maparrar/maqinato
+ * @author Alejandro Parra <maparrar@gmail.com>
  * @package '.$package.'
  * @subpackage '.$subpackage.'
  */';
 /******************************* ATRIBUTOS ********************************/
 foreach ($attributes as $attribute){
     $atributes.='
-    /** '.$attribute['comment'].' 
+    /** 
+     * '.$attribute['comment'].' 
+     * 
      * @var '.$attribute['type'].'
      */
     protected $'.$attribute['name'].';';
@@ -58,6 +55,8 @@ foreach ($attributes as $attribute){
         $value='""';
     }elseif(strtolower($attribute['type'])==="date"){
         $value='date(\'Y-m-d H:i:s\')';
+    }elseif(strtolower($attribute['type'])==="array"){
+        $value='array()';
     }
     $parameters.='$'.$attribute['name'].'='.$value.',';
     $constructor.='
@@ -67,7 +66,7 @@ $parameters=substr($parameters,0,-1);
 $constructor.='
     */';
 $constructor.='
-    function '.$class.'('.$parameters.'){        ';
+    function __construct('.$parameters.'){        ';
 foreach ($attributes as $attribute){
     $constructor.='
         $this->'.$attribute['name'].'=$'.$attribute['name'].';'; 
@@ -133,6 +132,7 @@ $header='<?php
  * Class data layer for the '.$class.' class
  * 
  * @author https://github.com/maparrar/maqinato
+ * @author Alejandro Parra <maparrar@gmail.com>
  * @package models
  * @subpackage dal
  */';
@@ -344,4 +344,28 @@ $class.='
 //Escribe la clase
 file_put_contents($file,$header.$class);
 print_r("CLASE DE MODELO GENERADA <br>");
+}
+
+
+/******************************************************************************/
+/********************* ALMACENA LA ESTRUCTURA GENERADORA **********************/
+/******************************************************************************/
+function saveGenerator($package,$subpackage,$class,$attributes){
+$file = 'classes/struct'.$class.'.php';
+    //Crea el texto de los atributos
+    foreach ($attributes as $attribute){
+        $textAtributes.='array("name"=>"'.$attribute['name'].'", "type"=>"'.$attribute['type'].'",   "comment"=>"'.$attribute['comment'].'"),
+        ';
+    }
+    $textAtributes=substr(trim($textAtributes),0,-1);
+    //Texto completo
+    $text='$package="'.$package.'";
+    $subpackage="'.$subpackage.'";
+    $class="'.$class.'";
+    $attributes=array(
+        '.$textAtributes.'
+    );';
+    //Escribe el texto
+    file_put_contents($file,$text);
+    print_r("ESTRUCTURA ALMACENADA <br>");
 }
