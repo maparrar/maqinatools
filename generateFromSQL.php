@@ -12,3 +12,5 @@
     $generator=new Generator("maqinato","maparrar <maparrar@gmail.com>","https://github.com/maparrar/maqinato");
     $generator->readFromSQL($sql);
     $generator->createFiles();
+    
+    echo '<a href="index.php">Volver</a>';

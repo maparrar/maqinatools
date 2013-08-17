@@ -17,3 +17,5 @@
     
     $generator=new Generator("maqinato","maparrar <maparrar@gmail.com>","https://github.com/maparrar/maqinato",array($struct),"Object");
     $generator->createFiles();
+    
+    echo '<a href="index.php">Volver</a>';
