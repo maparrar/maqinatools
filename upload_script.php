@@ -11,6 +11,7 @@
             echo "Size: " . ($_FILES["file"]["size"] / 1024) . " kB<br>";
             move_uploaded_file($_FILES["file"]["tmp_name"], "data/" . $_FILES["file"]["name"]);
             echo "Stored in: " . "upload/" . $_FILES["file"]["name"];
+            header('Location: generateFromSQL.php?file='.$_FILES["file"]["name"]); 
         }
     } else {
         echo "Invalid file";
