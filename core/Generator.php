@@ -114,23 +114,8 @@ class Generator{
      * Lee las estructuras a partir de un SQL
      */
     public function readFromSQL($sql){
-//        CREATE TABLE Pay_Loan (pay int(10) NOT NULL, loan int(10) NOT NULL, amount bigint(20), PRIMARY KEY (pay, loan));
-//        CREATE TABLE Loan (id int(10) NOT NULL AUTO_INCREMENT, `date` datetime NULL, interest float, paid bigint(20), `from` int(10) NOT NULL, `to` int(10) NOT NULL, PRIMARY KEY (id));
-//        CREATE TABLE Pay_Sale (pay int(10) NOT NULL, sale int(10) NOT NULL, amount bigint(20), PRIMARY KEY (pay, sale));
-//        CREATE TABLE Sale_Product (sale int(10) NOT NULL, product int(10) NOT NULL, units int(10), priceReal bigint(20), PRIMARY KEY (sale, product));
-//        CREATE TABLE Sale (id int(10) NOT NULL AUTO_INCREMENT, `date` datetime NULL, totalReal bigint(20), paid bigint(20), client int(10) NOT NULL, PRIMARY KEY (id));
-//        CREATE TABLE Pay_Purchase (pay int(10) NOT NULL, purchase int(10) NOT NULL, amount bigint(20), PRIMARY KEY (pay, purchase));
-//        CREATE TABLE Purchase_Product (purchase int(10) NOT NULL, product int(10) NOT NULL, units int(10), priceAprox bigint(20), priceReal bigint(20), PRIMARY KEY (purchase, product));
-//        CREATE TABLE Purchase (id int(10) NOT NULL AUTO_INCREMENT, `date` datetime NULL, totalAprox bigint(20), totalReal bigint(20), paid bigint(20), provider int(10) NOT NULL, PRIMARY KEY (id));
-//        CREATE TABLE ProductPrice (id int(10) NOT NULL AUTO_INCREMENT, product int(10) NOT NULL, `date` datetime NULL, pricePurchase int(10), priceSale int(10), PRIMARY KEY (id));
-//        CREATE TABLE Product (id int(10) NOT NULL AUTO_INCREMENT, name varchar(255), PRIMARY KEY (id));
-//        CREATE TABLE Pay (id int(10) NOT NULL AUTO_INCREMENT, `date` datetime NULL, amount int(10), `from` int(10) NOT NULL, `to` int(10) NOT NULL, PRIMARY KEY (id));
-//        CREATE TABLE Client (id int(10) NOT NULL, PRIMARY KEY (id));
-//        CREATE TABLE Provider (id int(10) NOT NULL, PRIMARY KEY (id));
-//        CREATE TABLE `User` (id int(10) NOT NULL, password varchar(255), salt varchar(255), PRIMARY KEY (id));
-//        CREATE TABLE Person (id int(10) NOT NULL AUTO_INCREMENT, name varchar(100), lastname varchar(100), phone varchar(100), PRIMARY KEY (id));
-        
         $lines=explode(";",$sql);
+        $structures=array();
         foreach ($lines as $line){
             if(strpos($line,'CREATE TABLE')!== false){
                 $tableLine=trim(str_replace("CREATE TABLE","",$line));
@@ -143,15 +128,7 @@ class Generator{
                 if(strpos($pkText,',')===false){
                     $pk=trim($pkText);
                     $attrArray=explode(",",$attrLine);
-                
-                
-                
-                    print_r("class: <b>".$class."</b><br/>");
-                    print_r("pk: ".$pk."<br/>");
-                    
-                    
-                    
-                    foreach ($attrArray as $attr) {
+                    foreach ($attrArray as $attr){
                         //Se elimina la PK, porque ya fue capturada
                         if(strpos($attr,'PRIMARY KEY')===false){
                             if(strpos($attr,"(")!==false){
@@ -159,14 +136,29 @@ class Generator{
                             }else{
                                 $attrRaw=trim($attr);
                             }
-                            print_r("___ attr: ".$attrRaw."<br/>");
+                            $attrArray=explode(" ",$attrRaw);
+                            $name=trim($attrArray[0]);
+                            $type=trim($attrArray[1]);
+                            if(strtolower($type)==="varchar"){
+                                $type='string';
+                            }elseif(strtolower($type)==="date"||strtolower($type)==="datetime"){
+                                $type='date';
+                            }elseif(strtolower($type)==="int"||strtolower($type)==="bigint"){
+                                $type='int';
+                            }
+                            $attributes[]=array(
+                                "name"=>$name,
+                                "type"=>$type,
+                                "comment"=>""
+                            );
                         }
-                        
                     }
-                    print_r("=======================================================<br/>");
+                    $structures[]=new Struct("","",$class,$attributes,$pk,"Object");
+                    unset($attributes);
                 }
             }
         }
+        $this->setStructs($structures);
     }
     /**
      * Reemplaza la primera ocurrencia de un caracter en una cadena
@@ -253,7 +245,8 @@ class Generator{
             if(strtolower($attribute['type'])==="string"){
                 $value='""';
             }elseif(strtolower($attribute['type'])==="date"){
-                $value='date(\'Y-m-d H:i:s\')';
+//                $value='date(\'Y-m-d H:i:s\')';
+                $value='""';
             }elseif(strtolower($attribute['type'])==="array"){
                 $value='array()';
             }
