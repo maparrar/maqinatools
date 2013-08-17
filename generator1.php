@@ -1,12 +1,13 @@
 <?php
-    $package="core";
-    $subpackage="routing";
-    $class="Request";
+    $package="";
+    $subpackage="";
+    $class="Struct";
     $attributes=array(
-        array("name"=>"uri",        "type"=>"string",   "comment"=>"URI del request"),
-        array("name"=>"controller", "type"=>"string",   "comment"=>"Controlador del request"),
-        array("name"=>"function",   "type"=>"string",   "comment"=>"Función del request"),
-        array("name"=>"parameters", "type"=>"array",    "comment"=>"Parámetros pasados al request")
+        array("name"=>"package", "type"=>"string",   "comment"=>"Nombre del paquete"),
+        array("name"=>"subpackage", "type"=>"string",   "comment"=>"Nombre del subpaquete"),
+        array("name"=>"class", "type"=>"string",   "comment"=>"Nombre d ela clase"),
+        array("name"=>"atributes", "type"=>"array",   "comment"=>"Lista de atributos de la clase"),
+        array("name"=>"pk", "type"=>"string",   "comment"=>"Nombre de la PK (primary key) de la tabla")
     );
     
     
@@ -27,7 +28,7 @@ function classGenerator($package,$subpackage,$class,$attributes){
 $file = 'class/'.$class.'.php';
 $header='<?php
 /** '.$class.' File
- * @'.$package.' models @'.$subpackage.' social */
+ * @'.$package.' @'.$subpackage.' */
 /**
  * '.$class.' Class
  *
