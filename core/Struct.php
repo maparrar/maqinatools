@@ -48,12 +48,12 @@ class Struct{
     protected $extends;
     /**
     * Constructor
-    * @param string Nombre del paquete        
-    * @param string Nombre del subpaquete        
-    * @param string Nombre d ela clase        
-    * @param array Lista de atributos de la clase
-    * @param string Nombre de la PK (primary key) de la tabla
-    * @param string Si hereda de otra clase
+    * @param string $package Nombre del paquete        
+    * @param string $subpackage Nombre del subpaquete        
+    * @param string $class Nombre d ela clase        
+    * @param array $atributes Lista de atributos de la clase
+    * @param string $pk Nombre de la PK (primary key) de la tabla
+    * @param string $extends Si hereda de otra clase
     */
     function __construct($package="",$subpackage="",$class="",$atributes=array(),$pk="",$extends=""){        
         $this->package=$package;

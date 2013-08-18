@@ -252,7 +252,7 @@ class Generator{
             }
             $parameters.='$'.$attribute['name'].'='.$value.',';
             $constructor.='
-    * @param '.$attribute['type'].' '.$attribute['comment'].'        ';
+    * @param '.$attribute['type'].' $'.$attribute['name'].' '.$attribute['comment'].'        ';
         }
         $parameters=substr($parameters,0,-1);
         $constructor.='
@@ -323,20 +323,11 @@ class '.$struct->getClass().$struct->getExtends().'{';
  * @subpackage dal
  */';
 
-        /****************************** CONSTRUCTOR *******************************/
-        $constructor='
-    /**
-     * Constructor: sets the database Object and the PDO handler
-     * @param string Type of connection string to use
-     */
-    function Dao'.$struct->getClass().'(){
-        parent::Dao();
-    }';
         /*********************************** CREATE ***********************************/
             $create='
     /**
      * Create an '.$struct->getClass().' in the database
-     * @param '.$struct->getClass().' new '.$struct->getClass().'
+     * @param '.$struct->getClass().' $'.strtolower($struct->getClass()).' new '.$struct->getClass().'
      * @return '.$struct->getClass().' '.$struct->getClass().' stored
      * @return string "exist" if the '.$struct->getClass().' already exist
      * @return false if the '.$struct->getClass().' couldn\'t created
@@ -358,14 +349,15 @@ class '.$struct->getClass().$struct->getExtends().'{';
                 (';
             $sql.=$parameters.')"';
             $create.='
-            $stmt = $this->handler->prepare('.$sql.');
+            $handler=Maqinato::connect("write");
+            $stmt = $handler->prepare('.$sql.');
             ';
             foreach ($struct->getAtributes() as $attribute){
                 $create.='$stmt->bindParam(\':'.$attribute['name'].'\',$'.strtolower($struct->getClass()).'->get'.ucfirst($attribute['name']).'());
             ';
             }            
             $create.='if($stmt->execute()){
-                $'.strtolower($struct->getClass()).'->set'.ucfirst($struct->getPk()).'(intval($this->handler->lastInsertID()));
+                $'.strtolower($struct->getClass()).'->set'.ucfirst($struct->getPk()).'(intval($handler->lastInsertID()));
                 $created=$'.strtolower($struct->getClass()).';
             }else{
                 $error=$stmt->errorInfo();
@@ -380,17 +372,18 @@ class '.$struct->getClass().$struct->getExtends().'{';
             $read='
     /**
      * Read a '.$struct->getClass().' from the database
-     * @param int '.$struct->getClass().' identificator
+     * @param int $'.$struct->getPk().' '.$struct->getClass().' identificator
      * @return '.$struct->getClass().' '.$struct->getClass().' loaded
      */
-    function read($id){
+    function read($'.$struct->getPk().'){
         $response=null;
-        if($this->exist($id)){';
+        if($this->exist($'.$struct->getPk().')){';
             $sql='"SELECT * FROM '.$struct->getClass().' WHERE '.$struct->getPk().'= ?"';
             $read.='
-            $stmt = $this->handler->prepare('.$sql.');
+            $handler=Maqinato::connect("read");
+            $stmt = $handler->prepare('.$sql.');
             ';
-            $read.='if ($stmt->execute(array($id))) {
+            $read.='if ($stmt->execute(array($'.$struct->getPk().'))) {
                 $row=$stmt->fetch();
                 $'.strtolower($struct->getClass()).'=new '.$struct->getClass().'();
             ';
@@ -416,7 +409,7 @@ class '.$struct->getClass().$struct->getExtends().'{';
             $update='
     /**
      * Update a '.$struct->getClass().' in the database
-     * @param '.$struct->getClass().' '.$struct->getClass().' object
+     * @param '.$struct->getClass().' $'.strtolower($struct->getClass()).' '.$struct->getClass().' object
      * @return false if could\'nt update it
      * @return true if the '.$struct->getClass().' was updated
      */
@@ -434,7 +427,8 @@ class '.$struct->getClass().$struct->getExtends().'{';
             $columns=substr($columns,0,-1);
             $sql='"UPDATE '.$struct->getClass().' SET '.$columns.' WHERE '.$struct->getPk().'=:'.$struct->getPk().'"';
             $update.='
-            $stmt = $this->handler->prepare('.$sql.');
+            $handler=Maqinato::connect();
+            $stmt = $handler->prepare('.$sql.');
             ';
             foreach ($struct->getAtributes() as $attribute){
                 $update.='$stmt->bindParam(\':'.$attribute['name'].'\',$'.strtolower($struct->getClass()).'->get'.ucfirst($attribute['name']).'());
@@ -455,14 +449,15 @@ class '.$struct->getClass().$struct->getExtends().'{';
             $delete='
     /**
      * Delete an '.$struct->getClass().' from the database
-     * @param '.$struct->getClass().' '.$struct->getClass().' object
+     * @param '.$struct->getClass().' $'.strtolower($struct->getClass()).' '.$struct->getClass().' object
      * @return false if could\'nt delete it
      * @return true if the '.$struct->getClass().' was deleted
      */
     function delete($'.strtolower($struct->getClass()).'){
         $deleted=false;
         if($this->exist($'.strtolower($struct->getClass()).'->get'.ucfirst($struct->getPk()).'())){
-            $stmt = $this->handler->prepare("DELETE '.$struct->getClass().' WHERE '.$struct->getPk().'=:'.$struct->getPk().'");
+            $handler=Maqinato::connect("delete");
+            $stmt = $handler->prepare("DELETE '.$struct->getClass().' WHERE '.$struct->getPk().'=:'.$struct->getPk().'");
             $stmt->bindParam(\':'.$struct->getPk().'\',$'.strtolower($struct->getClass()).'->get'.ucfirst($struct->getPk()).'());
             if($stmt->execute()){
                 $deleted=true;
@@ -479,23 +474,27 @@ class '.$struct->getClass().$struct->getExtends().'{';
             $exist='
     /**
      * Return if a '.$struct->getClass().' exist in the database
-     * @param int '.$struct->getClass().' identificator
+     * @param int $'.$struct->getPk().' '.$struct->getClass().' identificator
      * @return false if doesn\'t exist
      * @return true if exist
      */
-    function exist($id){
+    function exist($'.$struct->getPk().'){
         $exist=false;
-        $stmt = $this->handler->prepare("SELECT '.$struct->getPk().' FROM '.$struct->getClass().' WHERE '.$struct->getPk().'=:'.$struct->getPk().'");
-        $stmt->bindParam(\':'.$struct->getPk().'\',$id);
+        $handler=Maqinato::connect("read");
+        $stmt = $handler->prepare("SELECT '.$struct->getPk().' FROM '.$struct->getClass().' WHERE '.$struct->getPk().'=:'.$struct->getPk().'");
+        $stmt->bindParam(\':'.$struct->getPk().'\',$'.$struct->getPk().');
         if ($stmt->execute()) {
             $list=$stmt->fetch();
             if($list){
-                if(intval($list["'.$struct->getPk().'"])===intval($id)){
+                if(intval($list["'.$struct->getPk().'"])===intval($'.$struct->getPk().')){
                     $exist=true;
                 }else{
                     $exist=false;
                 }
             }
+        }else{
+            $error=$stmt->errorInfo();
+            error_log("[".__FILE__.":".__LINE__."]"."Mysql: ".$error[2]);
         }
         return $exist;
     }';
@@ -507,19 +506,22 @@ class '.$struct->getClass().$struct->getExtends().'{';
      */
     function listing(){
         $list=array();
-        $stmt = $this->handler->prepare("SELECT '.$struct->getPk().' FROM '.$struct->getClass().'");
+        $handler=Maqinato::connect("read");
+        $stmt = $handler->prepare("SELECT '.$struct->getPk().' FROM '.$struct->getClass().'");
         if ($stmt->execute()) {
             while ($row = $stmt->fetch()){
                 $'.strtolower($struct->getClass()).'=$this->read($row["'.$struct->getPk().'"]);
                 array_push($list,$'.strtolower($struct->getClass()).');
             }
+        }else{
+            $error=$stmt->errorInfo();
+            error_log("[".__FILE__.":".__LINE__."]"."Mysql: ".$error[2]);
         }
         return $list;
     }';
         /********************************* CLASS **********************************/
         $class='
-class Dao'.$struct->getClass().' extends Dao{';
-        $class.=$constructor;
+class Dao'.$struct->getClass().'{';
         $class.=$create;
         $class.=$read;
         $class.=$update;

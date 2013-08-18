@@ -3,16 +3,16 @@
     require_once 'core/Generator.php';
 
     $struct=new Struct(
-        "models",
-        "basic",
-        "User",
+        "core",
+        "",
+        "Environment",
         array(
-            array("name"=>"code",    "type"=>"int",   "comment"=>"Código de usuario"),
-            array("name"=>"name",    "type"=>"string","comment"=>"Nombre de usuario"),
-            array("name"=>"lastname","type"=>"string","comment"=>"Apellido de usuario")
+            array("name"=>"name",       "type"=>"string",   "comment"=>"Nombre del Environment"),
+            array("name"=>"urls",       "type"=>"array",    "comment"=>"Lista de las urls para las que el ambiente es válido"),
+            array("name"=>"database",   "type"=>"Database", "comment"=>"Base de datos del Environment")
         ),
-        "code",
-        "Object"
+        "name",
+        ""
     );
     
     $generator=new Generator("maqinato","maparrar <maparrar@gmail.com>","https://github.com/maparrar/maqinato",array($struct),"Object");
