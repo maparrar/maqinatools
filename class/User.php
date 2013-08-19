@@ -21,6 +21,12 @@ class User extends Object{
      * 
      * @var string
      */
+    protected $username;
+    /** 
+     *  
+     * 
+     * @var string
+     */
     protected $password;
     /** 
      *  
@@ -31,11 +37,13 @@ class User extends Object{
     /**
     * Constructor
     * @param int $id         
+    * @param string $username         
     * @param string $password         
     * @param string $salt         
     */
-    function __construct($id=0,$password="",$salt=""){        
+    function __construct($id=0,$username="",$password="",$salt=""){        
         $this->id=$id;
+        $this->username=$username;
         $this->password=$password;
         $this->salt=$salt;
     }
@@ -47,6 +55,14 @@ class User extends Object{
     */
     public function setId($value) {
         $this->id=$value;
+    }
+    /**
+    * Setter username
+    * @param string $value 
+    * @return void
+    */
+    public function setUsername($value) {
+        $this->username=$value;
     }
     /**
     * Setter password
@@ -71,6 +87,13 @@ class User extends Object{
     */
     public function getId() {
         return $this->id;
+    }
+    /**
+    * Getter: username
+    * @return string
+    */
+    public function getUsername() {
+        return $this->username;
     }
     /**
     * Getter: password

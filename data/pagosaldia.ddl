@@ -11,9 +11,9 @@ CREATE TABLE Product (id int(10) NOT NULL AUTO_INCREMENT, name varchar(255), PRI
 CREATE TABLE Pay (id int(10) NOT NULL AUTO_INCREMENT, `date` datetime NULL, amount int(10), `from` int(10) NOT NULL, `to` int(10) NOT NULL, PRIMARY KEY (id));
 CREATE TABLE Client (id int(10) NOT NULL, PRIMARY KEY (id));
 CREATE TABLE Provider (id int(10) NOT NULL, PRIMARY KEY (id));
-CREATE TABLE `User` (id int(10) NOT NULL, password varchar(255), salt varchar(255), PRIMARY KEY (id));
+CREATE TABLE `User` (id int(10) NOT NULL, username varchar(255), password varchar(255), salt varchar(255), PRIMARY KEY (id));
 CREATE TABLE Person (id int(10) NOT NULL AUTO_INCREMENT, name varchar(100), lastname varchar(100), email varchar(100), phone varchar(100), PRIMARY KEY (id));
-CREATE TABLE `Session` (id int(10) NOT NULL AUTO_INCREMENT, ini datetime NULL, end datetime NULL, state tinyint, ipIni varchar(18), ipEnd varchar(18), phpSession varchar(255), `user` int(10) NOT NULL, PRIMARY KEY (id));
+CREATE TABLE `Session` (id int(10) NOT NULL AUTO_INCREMENT comment 'Identificador de la sesión', ini datetime NULL, end datetime NULL, state tinyint, ipIni varchar(18), ipEnd varchar(18), phpSession varchar(255), `user` int(10) NOT NULL, PRIMARY KEY (id));
 ALTER TABLE `User` ADD INDEX FKUser198555 (id), ADD CONSTRAINT FKUser198555 FOREIGN KEY (id) REFERENCES Person (id);
 ALTER TABLE Provider ADD INDEX FKProvider275316 (id), ADD CONSTRAINT FKProvider275316 FOREIGN KEY (id) REFERENCES Person (id);
 ALTER TABLE Client ADD INDEX FKClient279495 (id), ADD CONSTRAINT FKClient279495 FOREIGN KEY (id) REFERENCES Person (id);

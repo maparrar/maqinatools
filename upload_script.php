@@ -2,7 +2,7 @@
     $allowedExts = array("ddl","sql","txt");
     $temp = explode(".", $_FILES["file"]["name"]);
     $extension = end($temp);
-    if ((($_FILES["file"]["type"] == "application/octet-stream") || ($_FILES["file"]["type"] == "text/x-sql") || ($_FILES["file"]["type"] == "text/plain")) && ($_FILES["file"]["size"] < 5000) && in_array($extension, $allowedExts)) {
+    if ((($_FILES["file"]["type"] == "application/octet-stream") || ($_FILES["file"]["type"] == "text/x-sql") || ($_FILES["file"]["type"] == "text/plain")) && ($_FILES["file"]["size"] < 5000000) && in_array($extension, $allowedExts)) {
         if ($_FILES["file"]["error"] > 0) {
             echo "Error: " . $_FILES["file"]["error"] . "<br>";
         } else {

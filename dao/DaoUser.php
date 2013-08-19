@@ -24,9 +24,10 @@ class DaoUser{
         if(!$this->exist($user->getId())){    
             $handler=Maqinato::connect("write");
             $stmt = $handler->prepare("INSERT INTO User 
-                (`id`,`password`,`salt`) VALUES 
-                (:id,:password,:salt)");
+                (`id`,`username`,`password`,`salt`) VALUES 
+                (:id,:username,:password,:salt)");
             $stmt->bindParam(':id',$user->getId());
+            $stmt->bindParam(':username',$user->getUsername());
             $stmt->bindParam(':password',$user->getPassword());
             $stmt->bindParam(':salt',$user->getSalt());
             if($stmt->execute()){
@@ -55,6 +56,7 @@ class DaoUser{
                 $row=$stmt->fetch();
                 $user=new User();
                 $user->setId(intval($row["id"]));
+                $user->setUsername($row["username"]);
                 $user->setPassword($row["password"]);
                 $user->setSalt($row["salt"]);
                 $response=$user;
@@ -76,10 +78,12 @@ class DaoUser{
         if($this->exist($user->getId())){
             $handler=Maqinato::connect();
             $stmt = $handler->prepare("UPDATE User SET 
+                `username`=:username,
                 `password`=:password,
                 `salt`=:salt,
                 WHERE id=:id");
             $stmt->bindParam(':id',$user->getId());
+            $stmt->bindParam(':username',$user->getUsername());
             $stmt->bindParam(':password',$user->getPassword());
             $stmt->bindParam(':salt',$user->getSalt());
             if($stmt->execute()){
