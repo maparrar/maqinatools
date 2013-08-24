@@ -1,27 +1,35 @@
 <?php
-/** Client File
+/** Role File
 * @package  @subpackage  */
 /**
-* Client Class
+* Role Class
 *
 * @author https://github.com/maparrar/maqinato
 * @author maparrar <maparrar@gmail.com>
 * @package 
 * @subpackage 
 */
-class Client extends Object{
+class Role extends Object{
     /** 
      *  
      * 
      * @var int
      */
     protected $id;
+    /** 
+     *  
+     * 
+     * @var string
+     */
+    protected $name;
     /**
     * Constructor
     * @param int $id         
+    * @param string $name         
     */
-    function __construct($id=0){        
+    function __construct($id=0,$name=""){        
         $this->id=$id;
+        $this->name=$name;
     }
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>   SETTERS   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     /**
@@ -32,6 +40,14 @@ class Client extends Object{
     public function setId($value) {
         $this->id=$value;
     }
+    /**
+    * Setter name
+    * @param string $value 
+    * @return void
+    */
+    public function setName($value) {
+        $this->name=$value;
+    }
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>   SETTERS   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     /**
     * Getter: id
@@ -39,6 +55,13 @@ class Client extends Object{
     */
     public function getId() {
         return $this->id;
+    }
+    /**
+    * Getter: name
+    * @return string
+    */
+    public function getName() {
+        return $this->name;
     }    
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>   METHODS   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 }

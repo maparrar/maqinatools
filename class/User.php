@@ -21,7 +21,7 @@ class User extends Object{
      * 
      * @var string
      */
-    protected $username;
+    protected $email;
     /** 
      *  
      * 
@@ -37,13 +37,13 @@ class User extends Object{
     /**
     * Constructor
     * @param int $id         
-    * @param string $username         
+    * @param string $email         
     * @param string $password         
     * @param string $salt         
     */
-    function __construct($id=0,$username="",$password="",$salt=""){        
+    function __construct($id=0,$email="",$password="",$salt=""){        
         $this->id=$id;
-        $this->username=$username;
+        $this->email=$email;
         $this->password=$password;
         $this->salt=$salt;
     }
@@ -57,12 +57,12 @@ class User extends Object{
         $this->id=$value;
     }
     /**
-    * Setter username
+    * Setter email
     * @param string $value 
     * @return void
     */
-    public function setUsername($value) {
-        $this->username=$value;
+    public function setEmail($value) {
+        $this->email=$value;
     }
     /**
     * Setter password
@@ -89,11 +89,11 @@ class User extends Object{
         return $this->id;
     }
     /**
-    * Getter: username
+    * Getter: email
     * @return string
     */
-    public function getUsername() {
-        return $this->username;
+    public function getEmail() {
+        return $this->email;
     }
     /**
     * Getter: password

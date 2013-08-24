@@ -14,6 +14,8 @@ CREATE TABLE Provider (id int(10) NOT NULL, PRIMARY KEY (id));
 CREATE TABLE `User` (id int(10) NOT NULL, username varchar(255), password varchar(255), salt varchar(255), PRIMARY KEY (id));
 CREATE TABLE Person (id int(10) NOT NULL AUTO_INCREMENT, name varchar(100), lastname varchar(100), email varchar(100), phone varchar(100), PRIMARY KEY (id));
 CREATE TABLE `Session` (id int(10) NOT NULL AUTO_INCREMENT comment 'Identificador de la sesión', ini datetime NULL, end datetime NULL, state tinyint, ipIni varchar(18), ipEnd varchar(18), phpSession varchar(255), `user` int(10) NOT NULL, PRIMARY KEY (id));
+CREATE TABLE Role (id int(10) NOT NULL AUTO_INCREMENT, name varchar(255), PRIMARY KEY (id));
+CREATE TABLE Role_User (Roleid int(10) NOT NULL, Userid int(10) NOT NULL, PRIMARY KEY (Roleid, Userid));
 ALTER TABLE `User` ADD INDEX FKUser198555 (id), ADD CONSTRAINT FKUser198555 FOREIGN KEY (id) REFERENCES Person (id);
 ALTER TABLE Provider ADD INDEX FKProvider275316 (id), ADD CONSTRAINT FKProvider275316 FOREIGN KEY (id) REFERENCES Person (id);
 ALTER TABLE Client ADD INDEX FKClient279495 (id), ADD CONSTRAINT FKClient279495 FOREIGN KEY (id) REFERENCES Person (id);
@@ -35,4 +37,6 @@ ALTER TABLE Loan ADD INDEX FKLoan470294 (`to`), ADD CONSTRAINT FKLoan470294 FORE
 ALTER TABLE PayLoan ADD INDEX FKPayLoan193040 (pay), ADD CONSTRAINT FKPayLoan193040 FOREIGN KEY (pay) REFERENCES Pay (id);
 ALTER TABLE PayLoan ADD INDEX FKPayLoan703397 (loan), ADD CONSTRAINT FKPayLoan703397 FOREIGN KEY (loan) REFERENCES Loan (id);
 ALTER TABLE `Session` ADD INDEX FKSession78200 (`user`), ADD CONSTRAINT FKSession78200 FOREIGN KEY (`user`) REFERENCES `User` (id);
+ALTER TABLE Role_User ADD INDEX FKRole_User91338 (Roleid), ADD CONSTRAINT FKRole_User91338 FOREIGN KEY (Roleid) REFERENCES Role (id);
+ALTER TABLE Role_User ADD INDEX FKRole_User569933 (Userid), ADD CONSTRAINT FKRole_User569933 FOREIGN KEY (Userid) REFERENCES `User` (id);
 

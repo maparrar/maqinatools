@@ -1,37 +1,36 @@
 <?php
-/** DaoPerson File
+/** DaoRole File
  * @package models @subpackage dal */
 /**
- * DaoPerson Class
+ * DaoRole Class
  *
- * Class data layer for the Person class
+ * Class data layer for the Role class
  * 
  * @author https://github.com/maparrar/maqinato
  * @author maparrar <maparrar@gmail.com>
  * @package models
  * @subpackage dal
  */
-class DaoPerson{
+class DaoRole{
     /**
-     * Create an Person in the database
-     * @param Person $person new Person
-     * @return Person Person stored
-     * @return string "exist" if the Person already exist
-     * @return false if the Person couldn't created
+     * Create an Role in the database
+     * @param Role $role new Role
+     * @return Role Role stored
+     * @return string "exist" if the Role already exist
+     * @return false if the Role couldn't created
      */
-    function create($person){
+    function create($role){
         $created=false;
-        if(!$this->exist($person)){    
+        if(!$this->exist($role)){    
             $handler=Maqinato::connect("write");
-            $stmt = $handler->prepare("INSERT INTO Person 
-                (`id`,`name`,`lastname`) VALUES 
-                (:id,:name,:lastname)");
-            $stmt->bindParam(':id',$person->getId());
-            $stmt->bindParam(':name',$person->getName());
-            $stmt->bindParam(':lastname',$person->getLastname());
+            $stmt = $handler->prepare("INSERT INTO Role 
+                (`id`,`name`) VALUES 
+                (:id,:name)");
+            $stmt->bindParam(':id',$role->getId());
+            $stmt->bindParam(':name',$role->getName());
             if($stmt->execute()){
-                $person->setId(intval($handler->lastInsertID()));
-                $created=$person;
+                $role->setId(intval($handler->lastInsertID()));
+                $created=$role;
             }else{
                 $error=$stmt->errorInfo();
                 error_log("[".__FILE__.":".__LINE__."]"."Mysql: ".$error[2]);
@@ -42,23 +41,22 @@ class DaoPerson{
         return $created;
     }
     /**
-     * Read a Person from the database
-     * @param int $id Person identificator
-     * @return Person Person loaded
+     * Read a Role from the database
+     * @param int $id Role identificator
+     * @return Role Role loaded
      */
     function read($id){
         $response=false;
         $handler=Maqinato::connect("read");
-        $stmt = $handler->prepare("SELECT * FROM Person WHERE id=:id");
+        $stmt = $handler->prepare("SELECT * FROM Role WHERE id=:id");
         $stmt->bindParam(':id',$id);
         if ($stmt->execute()) {
             if($stmt->rowCount()>0){
                 $row=$stmt->fetch();
-                $person=new Person();
-                $person->setId(intval($row["id"]));
-                $person->setName($row["name"]);
-                $person->setLastname($row["lastname"]);
-                $response=$person;
+                $role=new Role();
+                $role->setId(intval($row["id"]));
+                $role->setName($row["name"]);
+                $response=$role;
             }
         }else{
             $error=$stmt->errorInfo();
@@ -67,20 +65,18 @@ class DaoPerson{
         return $response;
     }
     /**
-     * Update a Person in the database
-     * @param Person $person Person object
+     * Update a Role in the database
+     * @param Role $role Role object
      * @return false if could'nt update it
-     * @return true if the Person was updated
+     * @return true if the Role was updated
      */
-    function update($person){
+    function update($role){
         $updated=false;
-        if($this->exist($person)){
+        if($this->exist($role)){
             $handler=Maqinato::connect();
-            $stmt = $handler->prepare("UPDATE Person SET `name`=:name,
-                `lastname`=:lastname WHERE id=:id");
-            $stmt->bindParam(':id',$person->getId());
-            $stmt->bindParam(':name',$person->getName());
-            $stmt->bindParam(':lastname',$person->getLastname());
+            $stmt = $handler->prepare("UPDATE Role SET `name`=:name WHERE id=:id");
+            $stmt->bindParam(':id',$role->getId());
+            $stmt->bindParam(':name',$role->getName());
             if($stmt->execute()){
                 $updated=true;
             }else{
@@ -93,17 +89,17 @@ class DaoPerson{
         return $updated;
     }
     /**
-     * Delete an Person from the database
-     * @param Person $person Person object
+     * Delete an Role from the database
+     * @param Role $role Role object
      * @return false if could'nt delete it
-     * @return true if the Person was deleted
+     * @return true if the Role was deleted
      */
-    function delete($person){
+    function delete($role){
         $deleted=false;
-        if($this->exist($person)){
+        if($this->exist($role)){
             $handler=Maqinato::connect("delete");
-            $stmt = $handler->prepare("DELETE Person WHERE id=:id");
-            $stmt->bindParam(':id',$person->getId());
+            $stmt = $handler->prepare("DELETE Role WHERE id=:id");
+            $stmt->bindParam(':id',$role->getId());
             if($stmt->execute()){
                 $deleted=true;
             }else{
@@ -116,20 +112,20 @@ class DaoPerson{
         return $deleted;
     }
     /**
-     * Return if a Person exist in the database
-     * @param Person $person Person object
+     * Return if a Role exist in the database
+     * @param Role $role Role object
      * @return false if doesn't exist
      * @return true if exist
      */
-    function exist($person){
+    function exist($role){
         $exist=false;
         $handler=Maqinato::connect("read");
-        $stmt = $handler->prepare("SELECT id FROM Person WHERE id=:id");
-        $stmt->bindParam(':id',$person->getId());
+        $stmt = $handler->prepare("SELECT id FROM Role WHERE id=:id");
+        $stmt->bindParam(':id',$role->getId());
         if ($stmt->execute()) {
             $row=$stmt->fetch();
             if($row){
-                if(intval($row["id"])===intval($person->getId())){
+                if(intval($row["id"])===intval($role->getId())){
                     $exist=true;
                 }else{
                     $exist=false;
@@ -142,17 +138,17 @@ class DaoPerson{
         return $exist;
     }
     /**
-     * Get the list of Person
-     * @return Person[] List of Person
+     * Get the list of Role
+     * @return Role[] List of Role
      */
     function listing(){
         $list=array();
         $handler=Maqinato::connect("read");
-        $stmt = $handler->prepare("SELECT id FROM Person");
+        $stmt = $handler->prepare("SELECT id FROM Role");
         if ($stmt->execute()) {
             while ($row = $stmt->fetch()){
-                $person=$this->read($row["id"]);
-                array_push($list,$person);
+                $role=$this->read($row["id"]);
+                array_push($list,$role);
             }
         }else{
             $error=$stmt->errorInfo();

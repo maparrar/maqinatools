@@ -334,7 +334,7 @@ class '.$struct->getClass().$struct->getExtends().'{';
      */
     function create($'.strtolower($struct->getClass()).'){
         $created=false;
-        if(!$this->exist($'.strtolower($struct->getClass()).'->get'.ucfirst($struct->getPk()).'())){    ';
+        if(!$this->exist($'.strtolower($struct->getClass()).')){    ';
             $parameters="";
             $columns="";
             foreach ($struct->getAtributes() as $attribute){
@@ -376,32 +376,33 @@ class '.$struct->getClass().$struct->getExtends().'{';
      * @return '.$struct->getClass().' '.$struct->getClass().' loaded
      */
     function read($'.$struct->getPk().'){
-        $response=null;
-        if($this->exist($'.$struct->getPk().')){';
-            $sql='"SELECT * FROM '.$struct->getClass().' WHERE '.$struct->getPk().'= ?"';
-            $read.='
-            $handler=Maqinato::connect("read");
-            $stmt = $handler->prepare('.$sql.');
-            ';
-            $read.='if ($stmt->execute(array($'.$struct->getPk().'))) {
+        $response=false;';
+        $sql='"SELECT * FROM '.$struct->getClass().' WHERE '.$struct->getPk().'=:'.$struct->getPk().'"';
+        $read.='
+        $handler=Maqinato::connect("read");
+        $stmt = $handler->prepare('.$sql.');
+        $stmt->bindParam(\':'.$struct->getPk().'\',$'.$struct->getPk().');
+        ';
+        $read.='if ($stmt->execute()) {
+            if($stmt->rowCount()>0){
                 $row=$stmt->fetch();
                 $'.strtolower($struct->getClass()).'=new '.$struct->getClass().'();
-            ';
-            foreach ($struct->getAtributes() as $attribute){
-                $value='$row["'.$attribute['name'].'"]';
-                if(strtolower($attribute['type'])==="int"){
-                    $value='intval($row["'.$attribute['name'].'"])';
-                }elseif(strtolower($attribute['type'])==="float"){
-                    $value='floatval($row["'.$attribute['name'].'"])';
-                }
-                $read.='    $'.strtolower($struct->getClass()).'->set'.ucfirst($attribute['name']).'('.$value.');
-            ';
+        ';
+        foreach ($struct->getAtributes() as $attribute){
+            $value='$row["'.$attribute['name'].'"]';
+            if(strtolower($attribute['type'])==="int"){
+                $value='intval($row["'.$attribute['name'].'"])';
+            }elseif(strtolower($attribute['type'])==="float"){
+                $value='floatval($row["'.$attribute['name'].'"])';
             }
-            $read.='    $response=$'.strtolower($struct->getClass()).';
-            }else{
-                $error=$stmt->errorInfo();
-                error_log("[".__FILE__.":".__LINE__."]"."Mysql: ".$error[2]);
+            $read.='        $'.strtolower($struct->getClass()).'->set'.ucfirst($attribute['name']).'('.$value.');
+        ';
+        }
+        $read.='        $response=$'.strtolower($struct->getClass()).';
             }
+        }else{
+            $error=$stmt->errorInfo();
+            error_log("[".__FILE__.":".__LINE__."]"."Mysql: ".$error[2]);
         }
         return $response;
     }';
@@ -415,7 +416,7 @@ class '.$struct->getClass().$struct->getExtends().'{';
      */
     function update($'.strtolower($struct->getClass()).'){
         $updated=false;
-        if($this->exist($'.strtolower($struct->getClass()).'->get'.ucfirst($struct->getPk()).'())){';
+        if($this->exist($'.strtolower($struct->getClass()).')){';
             $columns='
                 ';
             foreach ($struct->getAtributes() as $attribute){
@@ -424,7 +425,7 @@ class '.$struct->getClass().$struct->getExtends().'{';
                 ';
                 }
             }
-            $columns=substr($columns,0,-1);
+            $columns=substr(trim($columns),0,-1);
             $sql='"UPDATE '.$struct->getClass().' SET '.$columns.' WHERE '.$struct->getPk().'=:'.$struct->getPk().'"';
             $update.='
             $handler=Maqinato::connect();
@@ -455,7 +456,7 @@ class '.$struct->getClass().$struct->getExtends().'{';
      */
     function delete($'.strtolower($struct->getClass()).'){
         $deleted=false;
-        if($this->exist($'.strtolower($struct->getClass()).'->get'.ucfirst($struct->getPk()).'())){
+        if($this->exist($'.strtolower($struct->getClass()).')){
             $handler=Maqinato::connect("delete");
             $stmt = $handler->prepare("DELETE '.$struct->getClass().' WHERE '.$struct->getPk().'=:'.$struct->getPk().'");
             $stmt->bindParam(\':'.$struct->getPk().'\',$'.strtolower($struct->getClass()).'->get'.ucfirst($struct->getPk()).'());
@@ -474,19 +475,19 @@ class '.$struct->getClass().$struct->getExtends().'{';
             $exist='
     /**
      * Return if a '.$struct->getClass().' exist in the database
-     * @param int $'.$struct->getPk().' '.$struct->getClass().' identificator
+     * @param '.$struct->getClass().' $'.strtolower($struct->getClass()).' '.$struct->getClass().' object
      * @return false if doesn\'t exist
      * @return true if exist
      */
-    function exist($'.$struct->getPk().'){
+    function exist($'.strtolower($struct->getClass()).'){
         $exist=false;
         $handler=Maqinato::connect("read");
         $stmt = $handler->prepare("SELECT '.$struct->getPk().' FROM '.$struct->getClass().' WHERE '.$struct->getPk().'=:'.$struct->getPk().'");
-        $stmt->bindParam(\':'.$struct->getPk().'\',$'.$struct->getPk().');
+        $stmt->bindParam(\':'.$struct->getPk().'\',$'.strtolower($struct->getClass()).'->get'.ucfirst($struct->getPk()).'());
         if ($stmt->execute()) {
-            $list=$stmt->fetch();
-            if($list){
-                if(intval($list["'.$struct->getPk().'"])===intval($'.$struct->getPk().')){
+            $row=$stmt->fetch();
+            if($row){
+                if(intval($row["'.$struct->getPk().'"])===intval($'.strtolower($struct->getClass()).'->get'.ucfirst($struct->getPk()).'())){
                     $exist=true;
                 }else{
                     $exist=false;

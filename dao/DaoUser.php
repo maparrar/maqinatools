@@ -21,13 +21,13 @@ class DaoUser{
      */
     function create($user){
         $created=false;
-        if(!$this->exist($user->getId())){    
+        if(!$this->exist($user)){    
             $handler=Maqinato::connect("write");
             $stmt = $handler->prepare("INSERT INTO User 
-                (`id`,`username`,`password`,`salt`) VALUES 
-                (:id,:username,:password,:salt)");
+                (`id`,`email`,`password`,`salt`) VALUES 
+                (:id,:email,:password,:salt)");
             $stmt->bindParam(':id',$user->getId());
-            $stmt->bindParam(':username',$user->getUsername());
+            $stmt->bindParam(':email',$user->getEmail());
             $stmt->bindParam(':password',$user->getPassword());
             $stmt->bindParam(':salt',$user->getSalt());
             if($stmt->execute()){
@@ -48,22 +48,23 @@ class DaoUser{
      * @return User User loaded
      */
     function read($id){
-        $response=null;
-        if($this->exist($id)){
-            $handler=Maqinato::connect("read");
-            $stmt = $handler->prepare("SELECT * FROM User WHERE id= ?");
-            if ($stmt->execute(array($id))) {
+        $response=false;
+        $handler=Maqinato::connect("read");
+        $stmt = $handler->prepare("SELECT * FROM User WHERE id=:id");
+        $stmt->bindParam(':id',$id);
+        if ($stmt->execute()) {
+            if($stmt->rowCount()>0){
                 $row=$stmt->fetch();
                 $user=new User();
                 $user->setId(intval($row["id"]));
-                $user->setUsername($row["username"]);
+                $user->setEmail($row["email"]);
                 $user->setPassword($row["password"]);
                 $user->setSalt($row["salt"]);
                 $response=$user;
-            }else{
-                $error=$stmt->errorInfo();
-                error_log("[".__FILE__.":".__LINE__."]"."Mysql: ".$error[2]);
             }
+        }else{
+            $error=$stmt->errorInfo();
+            error_log("[".__FILE__.":".__LINE__."]"."Mysql: ".$error[2]);
         }
         return $response;
     }
@@ -75,15 +76,13 @@ class DaoUser{
      */
     function update($user){
         $updated=false;
-        if($this->exist($user->getId())){
+        if($this->exist($user)){
             $handler=Maqinato::connect();
-            $stmt = $handler->prepare("UPDATE User SET 
-                `username`=:username,
+            $stmt = $handler->prepare("UPDATE User SET `email`=:email,
                 `password`=:password,
-                `salt`=:salt,
-                WHERE id=:id");
+                `salt`=:salt WHERE id=:id");
             $stmt->bindParam(':id',$user->getId());
-            $stmt->bindParam(':username',$user->getUsername());
+            $stmt->bindParam(':email',$user->getEmail());
             $stmt->bindParam(':password',$user->getPassword());
             $stmt->bindParam(':salt',$user->getSalt());
             if($stmt->execute()){
@@ -105,7 +104,7 @@ class DaoUser{
      */
     function delete($user){
         $deleted=false;
-        if($this->exist($user->getId())){
+        if($this->exist($user)){
             $handler=Maqinato::connect("delete");
             $stmt = $handler->prepare("DELETE User WHERE id=:id");
             $stmt->bindParam(':id',$user->getId());
@@ -122,19 +121,19 @@ class DaoUser{
     }
     /**
      * Return if a User exist in the database
-     * @param int $id User identificator
+     * @param User $user User object
      * @return false if doesn't exist
      * @return true if exist
      */
-    function exist($id){
+    function exist($user){
         $exist=false;
         $handler=Maqinato::connect("read");
         $stmt = $handler->prepare("SELECT id FROM User WHERE id=:id");
-        $stmt->bindParam(':id',$id);
+        $stmt->bindParam(':id',$user->getId());
         if ($stmt->execute()) {
-            $list=$stmt->fetch();
-            if($list){
-                if(intval($list["id"])===intval($id)){
+            $row=$stmt->fetch();
+            if($row){
+                if(intval($row["id"])===intval($user->getId())){
                     $exist=true;
                 }else{
                     $exist=false;
