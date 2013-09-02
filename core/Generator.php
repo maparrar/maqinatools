@@ -120,7 +120,7 @@ class Generator{
             if(strpos($line,'CREATE TABLE')!== false){
                 $tableLine=trim(str_replace("CREATE TABLE","",$line));
                 $class=trim(str_replace("`","",substr($tableLine,0,strpos($tableLine,"("))));
-                $attrLineRaw=trim(str_replace(array("NOT","NULL","AUTO_INCREMENT","`"),"",substr($tableLine,strpos($tableLine,"("))));
+                $attrLineRaw=trim(str_replace(array("NOT","NULL","AUTO_INCREMENT"," ENGINE=InnoDB","`"),"",substr($tableLine,strpos($tableLine,"("))));
                 $attrLine=$this->str_freplace("(","",$this->str_lreplace(")","",$attrLineRaw));
                 //Extra la PK
                 $pkText=trim(str_replace(array("PRIMARY KEY","(",")"),"",substr($attrLine,strpos($attrLine,"PRIMARY KEY"),strpos($attrLine,")",strpos($attrLine,"PRIMARY KEY")))));
