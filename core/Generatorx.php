@@ -9,7 +9,7 @@
  * @package 
  * @subpackage 
  */
-class Generator{
+class Generatorx{
     /** 
      * Nombre del proyecto 
      * 

@@ -1,21 +1,24 @@
 <?php
     require_once 'core/Struct.php';
-    require_once 'core/Generator.php';
+    require_once 'core/Generatorx.php';
 
     $struct=new Struct(
+        "html5sync",
         "core",
-        "",
-        "Environment",
+        "Table",
         array(
-            array("name"=>"name",       "type"=>"string",   "comment"=>"Nombre del Environment"),
-            array("name"=>"urls",       "type"=>"array",    "comment"=>"Lista de las urls para las que el ambiente es válido"),
-            array("name"=>"database",   "type"=>"Database", "comment"=>"Base de datos del Environment")
+            array("name"=>"id",         "type"=>"int",      "comment"=>"Identificador de la tabla"),
+            array("name"=>"name",       "type"=>"string",   "comment"=>"Nombre de la tabla"),
+            array("name"=>"mode",       "type"=>"string",   "comment"=>"Modo de uso de la tabla: ('unlock': Para operaciones insert+read), ('lock': Para operaciones update+delete)"),
+            array("name"=>"fields",     "type"=>"array",    "comment"=>"Array con los nombres de las columnas"),
+            array("name"=>"data",       "type"=>"array",    "comment"=>"Array con los datos de la tabla"),
+            array("name"=>"pk",         "type"=>"string",   "comment"=>"Nombre de la Primary Key para la tabla")
         ),
-        "name",
+        "id",
         ""
     );
     
-    $generator=new Generator("maqinato","maparrar <maparrar@gmail.com>","https://github.com/maparrar/maqinato",array($struct),"Object");
+    $generator=new Generatorx("html5sync","maparrar <maparrar@gmail.com>","https://github.com/maparrar/html5sync",array($struct),"Object");
     $generator->createFiles();
     
     echo '<a href="index.php">Volver</a>';
